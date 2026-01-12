@@ -1,143 +1,106 @@
+// frontend/src/pages/Register.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
-  HiUser, 
-  HiMail, 
-  HiPhone, 
-  HiAcademicCap, 
+import {
+  HiUser,
+  HiMail,
   HiKey,
   HiEye,
-  HiEyeOff
+  HiEyeOff,
 } from 'react-icons/hi';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import heroImage from '../assets/images/waa1.jpg';
 
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: '',
-    lastName: '',
     email: '',
-    phone: '',
-    studentId: '',
     password: '',
-    confirmPassword: '',
-    role: 'student'
+    role: 'student',
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   const { register, error: authError } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    // Clear error for this field
-    if (errors[e.target.name]) {
-      setErrors({
-        ...errors,
-        [e.target.name]: ''
-      });
-    }
+    const { name, value } = e.target;
+    setFormData((p) => ({ ...p, [name]: value }));
+    if (errors[name]) setErrors((p) => ({ ...p, [name]: '' }));
   };
 
   const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-    if (formData.role === 'student' && !formData.studentId.trim()) {
-      newErrors.studentId = 'Student ID is required';
-    }
-    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    
-    return newErrors;
+    const e = {};
+    if (!formData.firstName.trim()) e.firstName = 'Name is required';
+    if (!formData.email.trim()) e.email = 'Email is required';
+    if (formData.password.length < 6)
+      e.password = 'Password must be at least 6 characters';
+    return e;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    
+
     setIsLoading(true);
-    
-    // Prepare data for API
-    const userData = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      studentId: formData.role === 'student' ? formData.studentId : undefined,
-      password: formData.password,
-      role: formData.role
-    };
-    
-    const result = await register(userData);
-    
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      // Show error from API
-      setErrors({ api: result.message });
-    }
-    
+    const result = await register(formData);
     setIsLoading(false);
+
+    if (result.success) navigate('/dashboard');
+    else setErrors({ api: result.message || 'Registration failed.' });
   };
 
   return (
-    <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-primary-navy mb-4">
-            Join ICT Girls
-          </h1>
-          <p className="text-primary-navy">
-            Create your account and start your tech journey
-          </p>
-        </div>
+    <div className="flex min-h-screen w-full my-0">
+      {/* LEFT IMAGE */}
+      <div className="hidden md:block md:w-1/2">
+        <img
+          src={heroImage}
+          alt="Somali girls coding together"
+          className="h-full w-full object-cover"
+        />
+      </div>
 
-        {/* Form Container */}
-        <div className="bg-white border border-primary-tech/10 rounded-2xl p-8">
-          {authError && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{authError}</p>
-            </div>
-          )}
+      {/* RIGHT FORM */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-gradient-to-b from-gray-50 to-white px-6 md:px-12 lg:px-16">
+        <div className="w-full max-w-xl"> {/* 👈 WIDER */}
+
+          {/* HEADER */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
           
-          {errors.api && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{errors.api}</p>
-            </div>
-          )}
+            <h1 className="text-4xl md:text-5xl font-black text-primary-navy">
+              Join ICT Girls
+            </h1>
 
-          {/* Role Selection */}
-          <div className="mb-8">
-            <label className="block text-primary-navy font-semibold mb-4">
+       
+          </motion.div>
+
+          {/* ROLE TOGGLE */}
+          <div className="mb-12">
+            <label className="block font-semibold text-primary-navy mb-4">
               I want to join as:
             </label>
-            <div className="flex gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {['student', 'mentor'].map((role) => (
                 <button
                   key={role}
                   type="button"
-                  onClick={() => setFormData({...formData, role})}
-                  className={`flex-1 py-3 rounded-lg font-medium transition ${
-                    formData.role === role 
-                      ? 'bg-primary-tech text-white' 
-                      : 'bg-primary-tech/10 text-primary-navy hover:bg-primary-tech/20'
+                  onClick={() => setFormData((p) => ({ ...p, role }))}
+                  className={`py-4 rounded-2xl text-lg font-medium transition ${
+                    formData.role === role
+                      ? 'bg-gradient-to-r from-primary-tech to-primary-navy text-white shadow-lg'
+                      : 'bg-white border border-primary-tech/30 text-primary-navy hover:shadow'
                   }`}
                 >
                   {role === 'student' ? 'Student' : 'Mentor'}
@@ -146,227 +109,83 @@ const Register = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-primary-navy mb-2">
-                  First Name *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <HiUser className="text-primary-navy/60" />
-                  </div>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-tech ${
-                      errors.firstName ? 'border-red-300' : 'border-primary-tech/30'
-                    }`}
-                    placeholder="First name"
-                  />
-                </div>
-                {errors.firstName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-primary-navy mb-2">
-                  Last Name *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <HiUser className="text-primary-navy/60" />
-                  </div>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-tech ${
-                      errors.lastName ? 'border-red-300' : 'border-primary-tech/30'
-                    }`}
-                    placeholder="Last name"
-                  />
-                </div>
-                {errors.lastName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-primary-navy mb-2">
-                University Email *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <HiMail className="text-primary-navy/60" />
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-tech ${
-                    errors.email ? 'border-red-300' : 'border-primary-tech/30'
-                  }`}
-                  placeholder="student@aljazeera.edu"
-                />
-              </div>
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="block text-sm font-medium text-primary-navy mb-2">
-                Phone Number *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <HiPhone className="text-primary-navy/60" />
-                </div>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-tech ${
-                    errors.phone ? 'border-red-300' : 'border-primary-tech/30'
-                  }`}
-                  placeholder="+252 61 123 4567"
-                />
-              </div>
-              {errors.phone && (
-                <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-              )}
-            </div>
-
-            {/* Student ID (for students only) */}
-            {formData.role === 'student' && (
-              <div>
-                <label className="block text-sm font-medium text-primary-navy mb-2">
-                  Student ID *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <HiAcademicCap className="text-primary-navy/60" />
-                  </div>
-                  <input
-                    type="text"
-                    name="studentId"
-                    value={formData.studentId}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-tech ${
-                      errors.studentId ? 'border-red-300' : 'border-primary-tech/30'
-                    }`}
-                    placeholder="AU2023001"
-                  />
-                </div>
-                {errors.studentId && (
-                  <p className="mt-1 text-sm text-red-600">{errors.studentId}</p>
-                )}
+          {/* FORM */}
+          <form onSubmit={handleSubmit} className="space-y-7">
+            {(authError || errors.api) && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-center text-sm text-red-700">
+                {authError || errors.api}
               </div>
             )}
 
-            {/* Passwords */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-primary-navy mb-2">
-                  Password *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <HiKey className="text-primary-navy/60" />
-                  </div>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-tech ${
-                      errors.password ? 'border-red-300' : 'border-primary-tech/30'
-                    }`}
-                    placeholder="At least 6 characters"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <HiEyeOff className="text-primary-navy/60 hover:text-primary-tech" />
-                    ) : (
-                      <HiEye className="text-primary-navy/60 hover:text-primary-tech" />
-                    )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-primary-navy mb-2">
-                  Confirm Password *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <HiKey className="text-primary-navy/60" />
-                  </div>
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-tech ${
-                      errors.confirmPassword ? 'border-red-300' : 'border-primary-tech/30'
-                    }`}
-                    placeholder="Confirm your password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showConfirmPassword ? (
-                      <HiEyeOff className="text-primary-navy/60 hover:text-primary-tech" />
-                    ) : (
-                      <HiEye className="text-primary-navy/60 hover:text-primary-tech" />
-                    )}
-                  </button>
-                </div>
-                {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-                )}
+            {/* NAME */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Name</label>
+              <div className="relative">
+                <HiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                <input
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="w-full pl-12 py-4 rounded-full border border-gray-300 focus:ring-2 focus:ring-primary-tech"
+                  placeholder="Your full name"
+                />
               </div>
             </div>
 
-            {/* Submit Button */}
-            <button
+            {/* EMAIL */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Email</label>
+              <div className="relative">
+                <HiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                <input
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-12 py-4 rounded-full border border-gray-300 focus:ring-2 focus:ring-primary-tech"
+                  placeholder="student@aljazeera.edu"
+                />
+              </div>
+            </div>
+
+            {/* PASSWORD */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Password</label>
+              <div className="relative">
+                <HiKey className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-12 pr-12 py-4 rounded-full border border-gray-300 focus:ring-2 focus:ring-primary-tech"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                >
+                  {showPassword ? <HiEyeOff /> : <HiEye />}
+                </button>
+              </div>
+            </div>
+
+            {/* SUBMIT */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
               type="submit"
               disabled={isLoading}
-              className="w-full bg-primary-tech hover:bg-primary-navy text-white font-semibold py-3 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-14 rounded-full bg-gradient-to-r from-primary-tech to-primary-navy text-white text-lg font-bold shadow-lg"
             >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-            </button>
+              {isLoading ? 'Creating account...' : 'Join ICT Girls'}
+            </motion.button>
           </form>
 
-          {/* Already have account */}
-          <div className="mt-8 text-center">
-            <p className="text-primary-navy">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary-tech hover:text-primary-navy font-semibold">
-                Sign in here
-              </Link>
-            </p>
-          </div>
+          <p className="my-10 text-center  text-primary-navy/80">
+            Already have an account?{' '}
+            <Link to="/login" className="text-primary-tech font-semibold">
+              Sign in
+            </Link>
+          </p>
         </div>
       </div>
     </div>

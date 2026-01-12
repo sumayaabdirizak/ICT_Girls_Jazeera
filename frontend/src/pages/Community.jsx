@@ -1,39 +1,37 @@
+// frontend/src/pages/Community.jsx
 import React, { useState } from 'react';
-import communityBanner from '../assets/images/ayada1.jpg';
 import postPlaceholder1 from '../assets/images/gabdho.png';
 import postPlaceholder2 from '../assets/images/as1.jpg';
 import postPlaceholder3 from '../assets/images/kuli1.jpg';
 import communityLogo from '../assets/images/G-1.png';
+import { Link } from 'react-router-dom';
 
 import {
-  HiHeart,
   HiChatAlt2,
   HiShare,
   HiBookmark,
-  HiDotsHorizontal,
   HiPhotograph,
   HiLink,
   HiFire,
   HiNewspaper,
   HiStar,
-  HiUsers,
-  HiLightningBolt
+  HiArrowRight, // ✅ FIXED
 } from 'react-icons/hi';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const Community = () => {
   const [activeTab, setActiveTab] = useState('hot');
-  const [posts, setPosts] = useState([
+
+  const [posts] = useState([
     {
       id: 1,
       author: 'Hodan',
       avatar: 'H',
-      time: '2 saac kahor',
-      title: 'Ku soo dhowaada platform-ka cusub! Python Workshops',
-      content: 'Waxaan ku faraxsanahay inaan idinla wadaagno jadwalka koorsooyinka Python for Data Science ee bilaabanaya toddobaadka soo socda.',
+      time: '2 hours ago',
+      title: 'Welcome to the new platform! Python Workshops',
+      content:
+        'We are excited to share the schedule for the upcoming Python for Data Science workshops starting next week.',
       image: postPlaceholder1,
-      likes: 124,
-      isLiked: false,
       comments: 45,
       tags: ['Python', 'Workshop'],
     },
@@ -41,12 +39,11 @@ const Community = () => {
       id: 2,
       author: 'LeyloDev',
       avatar: 'L',
-      time: '4 saac kahor',
-      title: "Su'aal ku saabsan Data Science roadmap-ka?",
-      content: 'Waxaan rabaa inaan bilaabo Data Science. Waa maxay talaabooyinka ugu horreeya ee aan qaadi karo?',
+      time: '4 hours ago',
+      title: 'Question about Data Science roadmap?',
+      content:
+        'I want to start Data Science. What are the first steps I should take?',
       image: postPlaceholder2,
-      likes: 82,
-      isLiked: false,
       comments: 28,
       tags: ['Question', 'Data Science'],
     },
@@ -54,627 +51,220 @@ const Community = () => {
       id: 3,
       author: 'NasraUI',
       avatar: 'N',
-      time: '6 saac kahor',
-      title: 'Showcase: React & Tailwind project-kaygii ugu horreeyay 🚀',
-      content: 'Tani waa mashruucii iigu horreeyay ee React & Tailwind CSS. Fadlan igu soo dhiiba fikradihiinna.',
+      time: '6 hours ago',
+      title: 'Showcase: My first React & Tailwind project 🚀',
+      content:
+        'This is my very first project using React & Tailwind CSS. Please share your feedback!',
       image: postPlaceholder3,
-      likes: 56,
-      isLiked: false,
       comments: 12,
       tags: ['Showcase', 'React'],
-    }
+    },
   ]);
 
-  const moderators = [
-    { name: 'Dr. Aisha', role: 'Community Lead', avatar: 'A' },
-    { name: 'Naima', role: 'Technical Advisor', avatar: 'N' },
-    { name: 'Khadra', role: 'Moderator', avatar: 'K' },
-  ];
-
-  const tabs = [
-    { id: 'hot', label: 'Ugu Shidan', icon: <HiFire /> },
-    { id: 'new', label: 'Cusub', icon: <HiNewspaper /> },
-    { id: 'top', label: 'Ugu Sarreeya', icon: <HiStar /> },
-  ];
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const postCardVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15
-      }
-    },
-    hover: {
-      y: -5,
-      scale: 1.01,
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 25
-      }
-    }
-  };
-
-  const tabVariants = {
-    rest: { scale: 1 },
-    hover: { 
-      scale: 1.05,
-      transition: { type: "spring", stiffness: 400, damping: 10 }
-    },
-    active: { 
-      scale: 1.1,
-      transition: { type: "spring", stiffness: 500 }
-    }
-  };
-
-  const buttonVariants = {
-    rest: { scale: 1 },
-    hover: { 
-      scale: 1.05,
-      boxShadow: "0 10px 25px -5px rgba(37, 99, 235, 0.3)"
-    },
-    tap: { scale: 0.95 }
-  };
-
-  const handleLike = (id) => {
-    setPosts(posts.map(post => 
-      post.id === id 
-        ? { 
-            ...post, 
-            isLiked: !post.isLiked,
-            likes: post.isLiked ? post.likes - 1 : post.likes + 1
-          }
-        : post
-    ));
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-navy/5 via-white to-primary-navy/5">
-      {/* Hero Banner with enhanced motion */}
-      <motion.div 
-        className="relative h-72 md:h-96 overflow-hidden mb-8"
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
+    <div className="min-h-screen bg-gray-50">
+
+  <section className="relative py-16 md:py-20 flex items-center justify-center px-6 md:px-12">
+  <div className="absolute inset-0 bg-gradient-to-br from-primary-tech/20 via-white to-primary-tech/20" />
+
+  <div className="relative z-10 max-w-6xl w-full text-center space-y-6 md:space-y-8">
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.3 }}
+      className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-primary-tech/10 text-primary-tech font-semibold uppercase"
+    >
+      <span className="w-3 h-3 rounded-full bg-primary-tech animate-pulse" />
+      Our Community
+    </motion.span>
+
+    <motion.h1
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-primary-navy leading-tight"
+    >
+      Jazeera ICT Girls
+    </motion.h1>
+
+    <motion.p
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.15 }}
+      className="text-lg md:text-xl lg:text-2xl text-primary-navy/80 max-w-4xl mx-auto"
+    >
+      Empowering Somali female students to lead in technology through world-class education, lifelong mentorship, and unbreakable sisterhood.
+    </motion.p>
+
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.25 }}
+      className="flex flex-col sm:flex-row gap-5 justify-center pt-4"
+    >
+      <Link
+        to="/register"
+        className="group inline-flex items-center justify-center gap-4 bg-primary-tech text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-xl hover:scale-[1.02] transition-all"
       >
-        <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="absolute inset-0"
-        >
-          <img
-            src={communityBanner}
-            alt="Jazeera ICT Girls Community"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-primary-navy/95 via-primary-navy/70 to-transparent" />
-        </motion.div>
-        
-        {/* Animated floating elements */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
-          transition={{ duration: 2, delay: 1 }}
-          className="absolute inset-0 overflow-hidden"
-        >
-          {[...Array(15)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-3 h-3 rounded-full bg-primary-tech/40"
-              initial={{ y: "100vh", x: Math.random() * 100 + "vw" }}
-              animate={{
-                y: "-100vh",
-                transition: {
-                  duration: 12 + Math.random() * 8,
-                  repeat: Infinity,
-                  delay: Math.random() * 4
-                }
-              }}
-            />
-          ))}
-        </motion.div>
+        Join the Movement
+        <HiArrowRight className="text-xl group-hover:translate-x-2 transition-transform" />
+      </Link>
 
-        <motion.div 
-          variants={containerVariants}
-          className="absolute inset-0 flex items-end container mx-auto px-6 pb-10"
-        >
-          <div>
-            <motion.h1 
-              className="text-4xl md:text-6xl font-extrabold text-white mb-3 tracking-tight"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              Jazeera ICT Girls
-            </motion.h1>
-            <motion.p 
-              className="text-white/90 text-lg md:text-2xl max-w-3xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              Wadaag, baro, oo isku xidh walaalahaaga Somaliyeed ee adduunka tech-ka
-            </motion.p>
-            
-            {/* Animated community icons */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.8, type: "spring" }}
-              className="mt-6 flex items-center gap-4"
-            >
-              <motion.div
-                animate={{ 
-                  rotate: [0, 10, -10, 0],
-                  y: [0, -5, 0]
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatDelay: 2
-                }}
-              >
-                <HiUsers className="text-primary-tech text-3xl" />
-              </motion.div>
-              
-            </motion.div>
-          </div>
-        </motion.div>
-      </motion.div>
+      <Link
+        to="/community"
+        className="group inline-flex items-center justify-center gap-4 border-2 border-primary-tech text-primary-tech px-10 py-5 rounded-2xl font-bold text-lg hover:bg-primary-tech/5 transition-all"
+      >
+        Explore Community
+      </Link>
+    </motion.div>
+  </div>
+</section>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-12 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* ================= MAIN FEED ================= */}
-          <div className="lg:col-span-8 space-y-8">
-            {/* Post Composer */}
-            <motion.div 
-              variants={itemVariants}
-              className="bg-white rounded-2xl shadow-lg border border-primary-navy/10 p-5 md:p-6"
-              whileHover={{ 
-                y: -3,
-                boxShadow: "0 20px 40px -15px rgba(37, 99, 235, 0.15)"
-              }}
-            >
-              <div className="flex items-start gap-4">
-                <motion.div 
-                  className="w-11 h-11 rounded-full bg-gradient-to-r from-primary-tech/20 to-primary-navy/20 flex items-center justify-center text-primary-navy font-bold text-lg"
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
+
+      {/* ================= MAIN CONTENT ================= */}
+      <div className="container mx-auto max-w-7xl px-4 mt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          {/* ================= MAIN FEED (WIDE / REDDIT STYLE) ================= */}
+          <div className="lg:col-span-8 xl:col-span-9 space-y-6">
+
+            {/* Composer */}
+            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+              <div className="flex gap-4">
+                <div className="w-10 h-10 rounded-full bg-primary-navy/10 flex items-center justify-center font-bold text-primary-navy">
                   Y
-                </motion.div>
-                <div className="flex-1">
-                  <motion.input
-                    whileFocus={{ scale: 1.01 }}
-                    placeholder="Maxaad maanta ka fikiraysaa, walaal?"
-                    className="w-full px-5 py-3.5 bg-gray-50 border border-primary-navy/10 rounded-full focus:ring-2 focus:ring-primary-navy focus:border-primary-navy outline-none text-base placeholder:text-primary-navy/50"
-                  />
                 </div>
+                <input
+                  placeholder="What's on your mind?"
+                  className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-navy outline-none"
+                />
               </div>
 
-              <div className="flex flex-wrap justify-between mt-5 pt-4 border-t border-primary-navy/10 gap-4">
-                <div className="flex gap-5">
-                  <motion.button
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                    className="flex items-center gap-2 text-primary-navy/70 hover:text-primary-tech transition"
-                  >
-                    <motion.div
-                      whileHover={{ rotate: 15 }}
-                    >
-                      <HiPhotograph className="text-xl" />
-                    </motion.div>
-                    <span className="font-medium text-sm">Sawir</span>
-                  </motion.button>
-                  <motion.button
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                    className="flex items-center gap-2 text-primary-navy/70 hover:text-primary-tech transition"
-                  >
-                    <motion.div
-                      whileHover={{ rotate: -15 }}
-                    >
-                      <HiLink className="text-xl" />
-                    </motion.div>
-                    <span className="font-medium text-sm">Link</span>
-                  </motion.button>
+              <div className="flex justify-between mt-4 pt-4 border-t border-gray-200">
+                <div className="flex gap-6 text-gray-600">
+                  <button className="flex items-center gap-2 hover:text-primary-navy">
+                    <HiPhotograph /> Photo
+                  </button>
+                  <button className="flex items-center gap-2 hover:text-primary-navy">
+                    <HiLink /> Link
+                  </button>
                 </div>
-                <motion.button
-                  variants={buttonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
-                  className="bg-gradient-to-r from-primary-tech to-primary-navy hover:from-primary-tech/95 hover:to-primary-navy/95 text-white px-8 py-3 rounded-full font-medium shadow-lg transition"
-                >
-                  Qor
-                </motion.button>
+                <button className="bg-primary-navy text-white px-6 py-2 rounded-lg">
+                  Post
+                </button>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Sorting Tabs */}
-            <motion.div 
-              variants={itemVariants}
-              className="flex bg-white rounded-xl shadow-lg border border-primary-navy/10 overflow-hidden"
-            >
-              {tabs.map((tab) => (
-                <motion.button
+            {/* Tabs */}
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 flex">
+              {[
+                { id: 'hot', label: 'Hot', icon: <HiFire /> },
+                { id: 'new', label: 'New', icon: <HiNewspaper /> },
+                { id: 'top', label: 'Top', icon: <HiStar /> },
+              ].map((tab) => (
+                <button
                   key={tab.id}
-                  variants={tabVariants}
-                  whileHover="hover"
-                  whileTap="tap"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-4 px-5 text-sm md:text-base font-medium transition-all relative ${
+                  className={`flex-1 py-3 flex items-center justify-center gap-2 font-medium border-b-2 ${
                     activeTab === tab.id
-                      ? 'text-primary-navy'
-                      : 'text-primary-navy/70 hover:text-primary-navy'
+                      ? 'text-primary-navy border-primary-navy'
+                      : 'text-gray-600 border-transparent hover:text-primary-navy'
                   }`}
                 >
-                  {activeTab === tab.id && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-tech to-primary-navy"
-                      initial={false}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                  <motion.div
-                    animate={activeTab === tab.id ? { scale: 1.2 } : { scale: 1 }}
-                    transition={{ type: "spring" }}
-                  >
-                    {tab.icon}
-                  </motion.div>
+                  {tab.icon}
                   {tab.label}
-                </motion.button>
+                </button>
               ))}
-            </motion.div>
+            </div>
 
             {/* Posts */}
-            <motion.div 
-              variants={containerVariants}
-              className="space-y-6"
-            >
-              <AnimatePresence>
-                {posts.map((post) => (
-                  <motion.article
-                    key={post.id}
-                    variants={postCardVariants}
-                    initial="hidden"
-                    animate="visible"
-                    whileHover="hover"
-                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                    className="bg-white rounded-2xl shadow-lg border border-primary-navy/10 overflow-hidden relative"
-                  >
-                    {/* Hover gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary-tech/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    <div className="flex relative z-10">
-                      {/* Vote column */}
-                      <div className="w-14 bg-gradient-to-b from-primary-navy/5 to-white flex flex-col items-center py-5 gap-1">
-                        <motion.button
-                          onClick={() => handleLike(post.id)}
-                          className={`p-1.5 rounded-full transition relative ${
-                            post.isLiked ? 'text-red-500' : 'text-primary-navy/60 hover:text-red-400'
-                          }`}
-                          whileHover={{ scale: 1.2 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <HiHeart className={`text-3xl ${post.isLiked ? 'fill-current' : ''}`} />
-                          {post.isLiked && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: [0, 1.5, 1] }}
-                              transition={{ duration: 0.4 }}
-                              className="absolute inset-0 rounded-full bg-red-500/20"
-                            />
-                          )}
-                        </motion.button>
-                        <motion.span 
-                          key={post.likes}
-                          initial={{ scale: 0.8 }}
-                          animate={{ scale: 1 }}
-                          className="text-base font-bold text-primary-navy mt-1"
-                        >
-                          {post.likes}
-                        </motion.span>
-                      </div>
-
-                      {/* Main content */}
-                      <div className="flex-1 p-5 md:p-6">
-                        {/* Author line */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <motion.div 
-                            className="w-9 h-9 rounded-full bg-gradient-to-r from-primary-tech/20 to-primary-navy/20 flex items-center justify-center text-primary-navy font-bold"
-                            whileHover={{ rotate: 360 }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            {post.avatar}
-                          </motion.div>
-                          <div>
-                            <span className="font-medium text-primary-navy">{post.author}</span>
-                            <span className="text-primary-navy/60 text-sm ml-2">• {post.time}</span>
-                          </div>
-                        </div>
-
-                        <motion.h3 
-                          className="text-xl md:text-2xl font-bold text-primary-navy mb-3 hover:text-primary-tech transition-colors cursor-pointer"
-                          whileHover={{ x: 5 }}
-                        >
-                          {post.title}
-                        </motion.h3>
-
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {post.tags.map((tag, i) => (
-                            <motion.span
-                              key={i}
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: i * 0.1 }}
-                              className="px-3 py-1 bg-gradient-to-r from-primary-tech/10 to-primary-navy/10 text-primary-navy rounded-full text-xs font-medium hover:from-primary-tech/20 hover:to-primary-navy/20 transition-all cursor-default"
-                              whileHover={{ scale: 1.05 }}
-                            >
-                              {tag}
-                            </motion.span>
-                          ))}
-                        </div>
-
-                        <p className="text-primary-navy/80 leading-relaxed mb-5 text-base">
-                          {post.content}
-                        </p>
-
-                        {post.image && (
-                          <motion.div 
-                            className="rounded-xl overflow-hidden mb-5"
-                            whileHover={{ scale: 1.01 }}
-                            transition={{ type: "spring", stiffness: 200 }}
-                          >
-                            <motion.img
-                              src={post.image}
-                              alt={post.title}
-                              className="w-full h-64 md:h-80 object-cover cursor-pointer"
-                              whileHover={{ scale: 1.05 }}
-                              transition={{ duration: 0.3 }}
-                            />
-                          </motion.div>
-                        )}
-
-                        {/* Actions bar */}
-                        <div className="flex items-center gap-8 text-sm text-primary-navy/70 pt-3 border-t border-primary-navy/10">
-                          {[
-                            { icon: <HiChatAlt2 />, text: `${post.comments} Jawaab` },
-                            { icon: <HiShare />, text: 'La wadaag' },
-                            { icon: <HiBookmark />, text: 'Keydi' }
-                          ].map((action, i) => (
-                            <motion.button
-                              key={i}
-                              className="flex items-center gap-2 hover:text-primary-tech transition"
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <motion.div
-                                whileHover={{ rotate: i === 0 ? 15 : i === 1 ? -15 : 0 }}
-                              >
-                                {action.icon}
-                              </motion.div>
-                              {action.text}
-                            </motion.button>
-                          ))}
-                          <motion.button 
-                            className="ml-auto text-primary-navy/60 hover:text-primary-navy transition"
-                            whileHover={{ rotate: 90 }}
-                          >
-                            <HiDotsHorizontal className="text-2xl" />
-                          </motion.button>
-                        </div>
-                      </div>
+            {posts.map((post) => (
+              <div
+                key={post.id}
+                className="bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 transition-shadow"
+              >
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-9 h-9 rounded-full bg-primary-navy/10 flex items-center justify-center font-semibold text-primary-navy">
+                      {post.avatar}
                     </div>
-                  </motion.article>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </div>
+                    <div className="text-sm text-gray-700">
+                      <span className="font-medium">{post.author}</span>
+                      <span className="text-gray-500 ml-2">• {post.time}</span>
+                    </div>
+                  </div>
 
-          {/* ================= SIDEBAR ================= */}
-          <div className="lg:col-span-4 space-y-6 lg:space-y-8">
-            {/* Community Info Widget */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-primary-navy/10 overflow-hidden relative"
-              whileHover={{ y: -3 }}
-            >
-              <motion.div 
-                className="h-2 bg-gradient-to-r from-primary-navy to-primary-tech"
-                animate={{
-                  backgroundPosition: ['0% 0%', '100% 100%'],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-                style={{
-                  backgroundSize: '200% 200%'
-                }}
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-4 mb-5">
-                  <motion.div 
-                    className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-r from-primary-tech/20 to-primary-navy/20 flex-shrink-0 border-2 border-white"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                  >
-                    <img src={communityLogo} alt="Community" className="w-full h-full object-cover" />
-                  </motion.div>
-                  <div>
-                    <motion.h3 
-                      className="font-bold text-xl text-primary-navy"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 }}
-                    >
-                      Jazeera ICT Girls
-                    </motion.h3>
-                    <motion.p 
-                      className="text-xs text-primary-navy/70"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3 }}
-                    >
-                      r/JazeeraICTGirls
-                    </motion.p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {post.title}
+                  </h3>
+
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="text-gray-700 text-sm mb-4">
+                    {post.content}
+                  </p>
+
+                  {post.image && (
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-64 object-cover rounded-lg mb-4"
+                    />
+                  )}
+
+                  <div className="flex items-center gap-6 text-sm text-gray-500 pt-3 border-t border-gray-200">
+                    <button className="flex items-center gap-1 hover:text-primary-navy">
+                      <HiChatAlt2 /> {post.comments}
+                    </button>
+                    <button className="hover:text-primary-navy">
+                      <HiShare /> Share
+                    </button>
+                    <button className="ml-auto hover:text-primary-navy">
+                      <HiBookmark /> Save
+                    </button>
                   </div>
                 </div>
-
-                <p className="text-sm text-primary-navy/80 mb-6 leading-relaxed">
-                  Platform-ka rasmiga ah ee gabdhaha ICT-ga Jaamacadda Al Jazeera.
-                </p>
-
-                <div className="grid grid-cols-2 gap-6 mb-6 text-center">
-                  {[
-                    { value: "1.2k", label: "Xubnood" },
-                    { value: "45", label: "Online" }
-                  ].map((stat, i) => (
-                    <motion.div 
-                      key={i}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 + i * 0.1 }}
-                      whileHover={{ scale: 1.05 }}
-                      className="p-4 bg-gradient-to-br from-primary-navy/5 to-white rounded-xl border border-primary-navy/10"
-                    >
-                      <div className="text-3xl font-bold text-primary-navy">{stat.value}</div>
-                      <div className="text-xs text-primary-navy/70 mt-1">{stat.label}</div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <motion.button
-                  variants={buttonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
-                  className="w-full bg-gradient-to-r from-primary-tech to-primary-navy hover:from-primary-tech/95 hover:to-primary-navy/95 text-white py-3.5 rounded-xl font-medium shadow-lg transition"
-                >
-                  Samee Qoraal
-                </motion.button>
               </div>
-            </motion.div>
-
-            {/* Rules Widget */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-primary-navy/10 p-6"
-              whileHover={{ y: -3 }}
-            >
-              <motion.h3 
-                className="font-bold text-xl text-primary-navy mb-6"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                Xeerarka Bulshada
-              </motion.h3>
-              <ol className="space-y-4 text-sm text-primary-navy/80">
-                {[
-                  'Ixtiraam qof kasta - ha isla weydiin cidina',
-                  'Qoraalada ha noqdaan ICT la xiriira',
-                  'Ha sameyn spam ama tijaabo marketing',
-                  'Luqad edeb leh isticmaal',
-                  'La wadaag aqoon, ha ka digin'
-                ].map((rule, i) => (
-                  <motion.li 
-                    key={i} 
-                    className="flex gap-3 items-start"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 + i * 0.1 }}
-                  >
-                    <motion.span 
-                      className="font-bold text-primary-tech text-lg min-w-[24px]"
-                      whileHover={{ scale: 1.2 }}
-                    >
-                      {i + 1}.
-                    </motion.span>
-                    <span>{rule}</span>
-                  </motion.li>
-                ))}
-              </ol>
-            </motion.div>
-
-            {/* Moderators Widget */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-primary-navy/10 p-6"
-              whileHover={{ y: -3 }}
-            >
-              <motion.h3 
-                className="font-bold text-xl text-primary-navy mb-6"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                Maamulayaasha
-              </motion.h3>
-              <div className="space-y-5">
-                {moderators.map((mod, i) => (
-                  <motion.div 
-                    key={i} 
-                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-primary-navy/5 transition-colors cursor-pointer"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + i * 0.1 }}
-                    whileHover={{ 
-                      x: 5,
-                      backgroundColor: 'rgba(37, 99, 235, 0.05)'
-                    }}
-                  >
-                    <motion.div 
-                      className="w-11 h-11 rounded-full bg-gradient-to-r from-primary-tech/20 to-primary-navy/20 flex items-center justify-center text-primary-navy font-bold text-lg border-2 border-white"
-                      whileHover={{ scale: 1.1, rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      {mod.avatar}
-                    </motion.div>
-                    <div>
-                      <div className="font-medium text-primary-navy text-base">{mod.name}</div>
-                      <div className="text-sm text-primary-navy/70">{mod.role}</div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+            ))}
           </div>
-        </motion.div>
+
+          {/* ================= RIGHT SIDEBAR (STICKY) ================= */}
+          <div className="lg:col-span-4 xl:col-span-3 hidden lg:block sticky top-24 space-y-6">
+            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <img
+                  src={communityLogo}
+                  alt="Community"
+                  className="w-12 h-12 rounded-full"
+                />
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Jazeera ICT Girls
+                  </h3>
+                  <p className="text-sm text-gray-500">Tech Community</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-700 mb-4">
+                A supportive community for women in tech.
+              </p>
+
+              <button className="w-full bg-primary-navy text-white py-2 rounded-lg">
+                Join Community
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );

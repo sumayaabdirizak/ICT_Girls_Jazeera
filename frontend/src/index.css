@@ -28,7 +28,7 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-blue-700;
+    @apply bg-primary-navy;
   }
 }
 
@@ -50,7 +50,7 @@
   }
 
   .btn-tech {
-    @apply bg-primary-tech hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg;
+    @apply bg-primary-tech hover:bg-primary-navy text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg;
   }
   
   .text-title {
